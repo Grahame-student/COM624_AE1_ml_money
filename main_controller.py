@@ -37,7 +37,6 @@ class MainController:
         self.__view.chart_data.axes.cla()
         financial_data = self.__model.data.copy(deep=True)
         financial_data = financial_data[financial_data.columns.drop('Volume')]
-        volume_data = self.__model.data.copy(deep=True)
         financial_data.plot(ax=self.__view.chart_data.axes)
         self.__view.chart_data.draw()
 
