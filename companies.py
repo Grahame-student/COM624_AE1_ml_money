@@ -8,5 +8,9 @@ company_list = [
     {
         "name": "Halma",
         "ticker": "HLMA.L"
+    },
+    {
+        "name": "Microsoft",
+        "ticker": "MSFT"
     }
 ]

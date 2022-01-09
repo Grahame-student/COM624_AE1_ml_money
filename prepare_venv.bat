@@ -9,6 +9,7 @@ pip install pyqt5
 pip install pyqt5-tools
 pip install pyqtgraph
 pip install pandas
+pip install statsmodels
 rem pip install yfinance
 rem pip install get-all-tickers
 

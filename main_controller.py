@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import companies
 
 
@@ -15,9 +17,8 @@ class MainController:
         self.__view.txt_look_ahead.valueChanged.connect(self.__on_look_ahead_changed)
 
     def __populate_company_list(self):
-        # Populate from a master list
         for company in companies.company_list:
-            self.__view.add_company(company["name"], company["ticker"])
+            self.__view.add_company(company['name'], company["ticker"])
 
     def __set_default_company(self):
         index = self.__view.cbo_company.findText(companies.default_company)
@@ -28,16 +29,14 @@ class MainController:
     def __set_default_look_ahead(self):
         self.__view.txt_look_ahead.setValue(self.__model.look_ahead)
 
-    def __get_ticker_data(self, ticker):
-        self.__model.ticker = ticker
-        self.__model.get_data()
-        self.__plot_data()
-
     def __plot_data(self):
         self.__view.chart_data.axes.cla()
-        financial_data = self.__model.data.copy(deep=True)
-        financial_data = financial_data[financial_data.columns.drop('Volume')]
-        financial_data.plot(ax=self.__view.chart_data.axes)
+        self.__view.chart_data.axes.plot(self.__model.data['date_time'], self.__model.data['Low'], linewidth=0.7,
+                                         label='Low')
+        self.__view.chart_data.axes.plot(self.__model.data['date_time'], self.__model.data['pred'], linewidth=0.7,
+                                         label='Prediction')
+        self.__view.chart_data.axes.set_xlim([self.__model.end_date - timedelta(days=self.__model.look_ahead * 5), self.__model.end_date])
+        self.__view.chart_data.axes.legend()
         self.__view.chart_data.draw()
 
     def __on_company_changed(self, index):
@@ -45,11 +44,13 @@ class MainController:
         self.__get_ticker_data(self.__view.cbo_company.itemData(index))
         self.__view.cbo_company.setEnabled(True)
 
+    def __get_ticker_data(self, ticker):
+        self.__model.ticker = ticker
+        self.__model.get_data()
+        self.__model.train()
+        self.__plot_data()
+
     def __on_look_ahead_changed(self):
         self.__model.look_ahead = self.__view.txt_look_ahead.value()
-        self.__get_profit_data(self.__view.txt_look_ahead.value())
-
-    def __get_profit_data(self, look_ahead):
-        self.__model.look_ahead = look_ahead
-        self.__model.get_profit()
+        self.__model.train()
         self.__plot_data()
