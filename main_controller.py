@@ -31,11 +31,13 @@ class MainController:
 
     def __plot_data(self):
         self.__view.chart_data.axes.cla()
+        self.__view.chart_data.axes.set_title(self.__view.cbo_company.currentText())
         self.__view.chart_data.axes.plot(self.__model.data['date_time'], self.__model.data['Low'], linewidth=0.7,
                                          label='Low')
         self.__view.chart_data.axes.plot(self.__model.data['date_time'], self.__model.data['pred'], linewidth=0.7,
                                          label='Prediction')
-        self.__view.chart_data.axes.set_xlim([self.__model.end_date - timedelta(days=self.__model.look_ahead * 5), self.__model.end_date])
+        self.__view.chart_data.axes.set_xlim(
+            [self.__model.end_date - timedelta(days=self.__model.look_ahead * 3), self.__model.end_date])
         self.__view.chart_data.axes.legend()
         self.__view.chart_data.draw()
 

@@ -62,3 +62,4 @@ class UiMainWindow(object):
 
     def add_company(self, company, ticker_id):
         self.cbo_company.addItem(company, ticker_id)
+        self.cbo_company.model().sort(0)
