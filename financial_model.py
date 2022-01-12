@@ -8,12 +8,10 @@ import pandas_datareader.data as pdr
 from sklearn import metrics
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
-from sklearn.model_selection import train_test_split
 
 from pykalman import KalmanFilter
 from matplotlib import pyplot
 
-from statsmodels.tsa.arima.model import ARIMA
 
 class FinancialModel:
     def __init__(self, ticker="", start_date=dt.datetime(1970, 1, 1), end_date=dt.datetime.now()):
@@ -131,34 +129,6 @@ class FinancialModel:
 
         prediction = numpy.append(y_train, pred)
         self.data['pred'] = prediction.tolist()
-
-    def __time_series(self):
-        self.data.index = pandas.to_datetime(self.data.index)
-        train_header = ['Low']
-        target_header = ['Low']
-
-        train, test = self.__split_data()
-        x_train = train[train_header]
-        y_train = train[target_header]
-        x_test = test[train_header]
-        y_test = test[target_header]
-
-        self.data.index.to_period('D')
-
-        model = ARIMA(x_train, order=(5, 2, 0))
-        model_fit = model.fit()
-        print(model_fit.summary())
-
-        # pred = regress.predict(poly_reg.fit_transform(x_test))
-        # print(f' MAE: {metrics.mean_absolute_error(y_test, pred)}')
-        # print(f' MSE: {metrics.mean_squared_error(y_test, pred)}')
-        # print(f'RMSE: {numpy.sqrt(metrics.mean_squared_error(y_test, pred))}')
-        # print(f'  R2: {metrics.r2_score(y_test, pred)}')
-        #
-        # prediction = numpy.append(y_train, pred)
-        prediction = numpy.append(y_train, y_test)
-        self.data['pred'] = prediction.tolist()
-
 
     def __kalman_filter_features(self, headers):
         kf = KalmanFilter(transition_matrices=[1],
